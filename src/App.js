@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.localVideoRef = React.createRef();
+  }
+  render() {
+    const success = (stream) => {
+      this.localVideoRef.current.srcObject = stream;
+    };
+    const failure = (e) => {
+      console.log("getUserMedia Error: ", e);
+    };
+    //add media constraints
+    const constraints = { video: true };
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(success)
+      .catch(failure);
+
+    /*success will not be called until getUserMedia returns*/
+    // (async () => {
+    //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    //   success(stream);
+    // })().catch(failure);
+
+    return (
+      <div>
+        <video ref={this.localVideoRef} autoPlay></video>
+      </div>
+    );
+  }
 }
 
 export default App;
